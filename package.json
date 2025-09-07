@@ -1,0 +1,70 @@
+{
+  "name": "mandoline-ci",
+  "version": "0.2.1",
+  "description": "Integrate custom code evals into CI pipelines using the Mandoline API.",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "bin": {
+    "mandoline-ci": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "check": "npm run lint && npm run format && npm run build && npm test"
+  },
+  "keywords": [
+    "mandoline",
+    "ci",
+    "evaluation",
+    "metrics",
+    "ai",
+    "code-quality",
+    "intent-analysis"
+  ],
+  "author": "Mandoline AI <support@mandoline.ai>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/mandoline-ai/mandoline-ci#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mandoline-ai/mandoline-ci.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mandoline-ai/mandoline-ci/issues"
+  },
+  "dependencies": {
+    "mandoline": "^0.6.0",
+    "commander": "^11.0.0",
+    "globby": "^13.2.2",
+    "simple-git": "^3.19.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^18.19.43",
+    "eslint": "^9.33.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.1.6",
+    "typescript-eslint": "^8.40.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ]
+}

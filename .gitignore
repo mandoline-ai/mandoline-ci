@@ -1,0 +1,6 @@
+# Development scripts
+run.sh
+
+# Local
+package/
+*.tgz
