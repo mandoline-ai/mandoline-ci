@@ -1,7 +1,8 @@
-import { SimpleGit, simpleGit } from 'simple-git';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
+
+import { SimpleGit, simpleGit } from 'simple-git';
 
 /**
  * Helper function to create git instance with consistent working directory handling

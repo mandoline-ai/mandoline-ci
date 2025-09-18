@@ -1,4 +1,4 @@
-import { validateGitRepository, getCurrentBranch, isHeadMergeCommit, getSmartBaseForMainBranch } from '../git';
+import { getCurrentBranch, getSmartBaseForMainBranch, isHeadMergeCommit, validateGitRepository } from '../git';
 
 describe('git utilities', () => {
   describe('validateGitRepository', () => {

@@ -3,20 +3,16 @@ export {
   discoverConfig,
   getDefaultThreshold,
   validateConfig,
-  validateConfigs,
+  validateConfigs
 } from './config.js';
-export { evaluateDiff, MandolineCI } from './core.js';
 export {
-  analyzeGitDiff,
-  getCurrentBranch,
-  validateGitRefs,
-  validateGitRepository,
-  isHeadMergeCommit,
-  getSmartBaseForMainBranch,
-  detectExecutionContext,
-  selectReferences,
-  validateReferences,
-  resolveGitReferences,
+  evaluateDiff, executeEvaluations, MandolineCI,
+  prepareEvaluationContext, validateSetupEnvironment
+} from './core.js';
+export {
+  analyzeGitDiff, detectExecutionContext, getCurrentBranch, getSmartBaseForMainBranch, isHeadMergeCommit, resolveGitReferences, selectReferences, validateGitRefs,
+  validateGitRepository, validateReferences
 } from './git.js';
 export { extractIntent } from './intent.js';
 export * from './types.js';
+

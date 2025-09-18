@@ -3,14 +3,13 @@ import { pathToFileURL } from 'url';
 
 import { access } from 'fs/promises';
 
+import { CONFIG_FILENAMES, DEFAULT_THRESHOLD } from './constants.js';
 import {
   ConfigDiscoveryOptions,
   EvalConfig,
   ValidationResult,
 } from './types.js';
-import { isValidUUID } from './utils.js';
-import { CONFIG_FILENAMES, DEFAULT_THRESHOLD } from './constants.js';
-import { formatError } from './utils.js';
+import { formatError, isValidUUID } from './utils.js';
 
 export async function discoverConfig(
   options: ConfigDiscoveryOptions = {}
