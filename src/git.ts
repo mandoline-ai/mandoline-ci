@@ -1,8 +1,8 @@
 import { DiffResult, SimpleGit } from 'simple-git';
 
-import { GitDiffResult, GitFileChange, GitFileStatus, GitContext, ReferenceSelection } from './types.js';
+import { DEFAULT_BASE_BRANCH, DEFAULT_HEAD_BRANCH, EMPTY_TREE_HASH } from './constants.js';
+import { GitContext, GitDiffResult, GitFileChange, GitFileStatus, ReferenceSelection } from './types.js';
 import { createGit, formatError } from './utils.js';
-import { EMPTY_TREE_HASH, DEFAULT_BASE_BRANCH, DEFAULT_HEAD_BRANCH } from './constants.js';
 
 export async function analyzeGitDiff(
   base: string,

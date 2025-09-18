@@ -1,3 +1,5 @@
+import type { Mandoline } from 'mandoline';
+
 export type UUID = string;
 
 /**
@@ -40,6 +42,7 @@ export interface EvaluateDiffOptions {
   intent?: string;
   workingDirectory?: string;
   verbose?: boolean;
+  configPath?: string;
 }
 
 export interface EvalResult extends BaseResult {
@@ -49,6 +52,41 @@ export interface EvalResult extends BaseResult {
   configName: string;
   score?: number;
   threshold?: number;
+}
+
+export type LogFunction = (message: string) => void;
+
+export interface EvaluationPreparation {
+  configs: EvalConfig[];
+  intentSource: IntentSource;
+  gitDiff: GitDiffResult;
+}
+
+export interface PrepareEvaluationContextOptions {
+  base: string;
+  head: string;
+  manualIntent?: string;
+  workingDirectory: string;
+  configPath?: string;
+  log?: LogFunction;
+}
+
+export interface ExecuteEvaluationsParams {
+  base: string;
+  configs: EvalConfig[];
+  intentSource: IntentSource;
+  gitDiff: GitDiffResult;
+  workingDirectory: string;
+  client: Mandoline;
+  verbose?: boolean;
+  log?: LogFunction;
+}
+
+export interface ValidateSetupEnvironmentOptions {
+  client: Mandoline;
+  workingDirectory: string;
+  configPath?: string;
+  log?: LogFunction;
 }
 
 /**

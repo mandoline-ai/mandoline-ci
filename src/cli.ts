@@ -2,10 +2,10 @@
 
 import { Command } from 'commander';
 
-import { MandolineCI } from './core.js';
 import {
   DEFAULT_THRESHOLD,
 } from './constants.js';
+import { MandolineCI } from './core.js';
 import { resolveGitReferences } from './git.js';
 import { getPackageVersion } from './utils.js';
 
@@ -116,6 +116,7 @@ program
         intent: options.intent,
         workingDirectory: options.workingDirectory,
         verbose: options.verbose,
+        configPath: options.config,
       });
 
       displayResults(results);
@@ -131,6 +132,7 @@ program
 program
   .command('validate')
   .description('Validate setup and configuration')
+  .option('--config <path>', 'Custom config file path')
   .option('--working-directory <path>', 'Working directory path')
   .action(async (options) => {
     try {
@@ -140,7 +142,9 @@ program
       });
 
       console.log('Validating setup...');
-      const result = await client.validateSetup();
+      const result = await client.validateSetup({
+        configPath: options.config,
+      });
 
       if (result.success) {
         console.log('✅ Setup validation passed');

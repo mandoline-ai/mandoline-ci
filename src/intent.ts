@@ -1,8 +1,8 @@
 import { readFile } from 'fs/promises';
 
+import { EMPTY_TREE_HASH } from './constants.js';
 import { IntentSource } from './types.js';
 import { createGit, formatError } from './utils.js';
-import { EMPTY_TREE_HASH } from './constants.js';
 
 export async function extractIntent(
   base: string,
