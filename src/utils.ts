@@ -18,7 +18,6 @@ export function formatError(error: unknown, context: string): string {
   return `${context}: ${error instanceof Error ? error.message : String(error)}`;
 }
 
-
 /**
  * Safely read a file, returning null if it doesn't exist or can't be read
  */
@@ -45,10 +44,13 @@ export function safeJsonParse<T>(jsonString: string, fallback: T): T {
  * Get package version from package.json relative to import.meta.url
  */
 export function getPackageVersion(importMetaUrl: string): string {
-  const packageJsonPath = join(fileURLToPath(importMetaUrl), '../../../package.json');
+  const packageJsonPath = join(
+    fileURLToPath(importMetaUrl),
+    '../../../package.json'
+  );
   const content = safeReadFile(packageJsonPath);
   if (!content) return 'unknown';
-  
+
   const packageJson = safeJsonParse(content, { version: 'unknown' });
   return packageJson.version;
 }
@@ -57,6 +59,7 @@ export function getPackageVersion(importMetaUrl: string): string {
  * Check if a string is a valid UUID
  */
 export function isValidUUID(uuid: string): boolean {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uuid);
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    uuid
+  );
 }
-

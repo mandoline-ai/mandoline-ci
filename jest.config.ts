@@ -1,20 +1,23 @@
-import type { Config } from "@jest/types";
+import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
   preset: 'ts-jest/presets/default-esm',
-  testEnvironment: "node",
+  testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
   transform: {
-    "^.+\\.ts$": ["ts-jest", {
-      useESM: true,
-      tsconfig: {
-        target: "es2022",
-        module: "es2022",
-        moduleResolution: "node",
-        esModuleInterop: true
-      }
-    }],
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: {
+          target: 'es2022',
+          module: 'es2022',
+          moduleResolution: 'node',
+          esModuleInterop: true,
+        },
+      },
+    ],
   },
   extensionsToTreatAsEsm: ['.ts'],
   collectCoverageFrom: [

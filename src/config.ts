@@ -60,7 +60,9 @@ async function loadConfigFromPath(configPath: string): Promise<EvalConfig[]> {
       );
     }
   } catch (error) {
-    throw new Error(formatError(error, `Failed to load configuration from ${configPath}`));
+    throw new Error(
+      formatError(error, `Failed to load configuration from ${configPath}`)
+    );
   }
 }
 
@@ -162,7 +164,6 @@ export function validateConfigs(configs: EvalConfig[]): ValidationResult {
     warnings: allWarnings,
   };
 }
-
 
 export function getDefaultThreshold(): number {
   return DEFAULT_THRESHOLD;
