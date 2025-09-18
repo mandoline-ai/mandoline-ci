@@ -12,13 +12,6 @@ export function createGit(workingDir?: string): SimpleGit {
 }
 
 /**
- * Utility for consistent error formatting across the application
- */
-export function formatError(error: unknown, context: string): string {
-  return `${context}: ${error instanceof Error ? error.message : String(error)}`;
-}
-
-/**
  * Safely read a file, returning null if it doesn't exist or can't be read
  */
 export function safeReadFile(path: string): string | null {

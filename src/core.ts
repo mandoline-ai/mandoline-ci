@@ -7,6 +7,7 @@ import {
   validateConfigs,
 } from './config.js';
 import { getEnvironmentContext } from './context.js';
+import { formatPrompt, formatResponse } from './formatters/payload.js';
 import {
   analyzeGitDiff,
   validateGitRefs,
@@ -212,24 +213,8 @@ export async function executeEvaluations(
     for (const [ruleId, rule] of Object.entries(config.rules)) {
       const threshold = rule.threshold ?? getDefaultThreshold();
 
-      const beforeSections = filteredFiles
-        .map((file) =>
-          file.beforeContent
-            ? `File: \`${file.path}\`\n\`\`\`\n${file.beforeContent}\n\`\`\``
-            : null
-        )
-        .filter((value): value is string => Boolean(value));
-
-      const promptSegments = [intentSource.content];
-      if (beforeSections.length > 0) {
-        promptSegments.push(beforeSections.join('\n---\n'));
-      }
-      const prompt = promptSegments.join('\n---\n');
-
-      const response = filteredFiles
-        .map((file) => file.diff)
-        .filter(Boolean)
-        .join('\n---\n');
+      const prompt = formatPrompt(intentSource.content, filteredFiles);
+      const response = formatResponse(filteredFiles);
 
       const evaluation = await client.createEvaluation({
         metricId: rule.metricId,

@@ -12,7 +12,8 @@ import {
   GitFileStatus,
   ReferenceSelection,
 } from './types.js';
-import { createGit, formatError } from './utils.js';
+import { formatError } from './formatters/errors.js';
+import { createGit } from './utils.js';
 
 export async function analyzeGitDiff(
   base: string,

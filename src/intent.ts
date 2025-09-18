@@ -2,7 +2,8 @@ import { readFile } from 'fs/promises';
 
 import { EMPTY_TREE_HASH } from './constants.js';
 import { IntentSource } from './types.js';
-import { createGit, formatError } from './utils.js';
+import { formatError } from './formatters/errors.js';
+import { createGit } from './utils.js';
 
 export async function extractIntent(
   base: string,
