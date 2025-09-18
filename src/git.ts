@@ -1,7 +1,17 @@
 import { DiffResult, SimpleGit } from 'simple-git';
 
-import { DEFAULT_BASE_BRANCH, DEFAULT_HEAD_BRANCH, EMPTY_TREE_HASH } from './constants.js';
-import { GitContext, GitDiffResult, GitFileChange, GitFileStatus, ReferenceSelection } from './types.js';
+import {
+  DEFAULT_BASE_BRANCH,
+  DEFAULT_HEAD_BRANCH,
+  EMPTY_TREE_HASH,
+} from './constants.js';
+import {
+  GitContext,
+  GitDiffResult,
+  GitFileChange,
+  GitFileStatus,
+  ReferenceSelection,
+} from './types.js';
 import { createGit, formatError } from './utils.js';
 
 export async function analyzeGitDiff(
@@ -17,7 +27,7 @@ export async function analyzeGitDiff(
 
     // Get the diff between base and head
     let diff: DiffResult;
-    
+
     // Handle special case: EMPTY_TREE_HASH cannot be used in range expressions
     if (base === EMPTY_TREE_HASH) {
       // For first commit scenarios, compare empty tree to HEAD directly
@@ -85,7 +95,8 @@ function determineFileStatus(file: any): GitFileChange['status'] {
   if (file.binary) {
     // For binary files, we need to check insertions/deletions
     if (file.insertions > 0 && file.deletions === 0) return GitFileStatus.ADDED;
-    if (file.insertions === 0 && file.deletions > 0) return GitFileStatus.DELETED;
+    if (file.insertions === 0 && file.deletions > 0)
+      return GitFileStatus.DELETED;
     return GitFileStatus.MODIFIED;
   }
 
@@ -156,7 +167,9 @@ async function getRenameInfo(
 
     return null;
   } catch (error) {
-    console.warn(formatError(error, `Could not detect rename info for ${currentPath}`));
+    console.warn(
+      formatError(error, `Could not detect rename info for ${currentPath}`)
+    );
     return null;
   }
 }
@@ -218,7 +231,9 @@ export async function isHeadMergeCommit(workingDir?: string): Promise<boolean> {
   }
 }
 
-export async function getSmartBaseForMainBranch(workingDir?: string): Promise<string> {
+export async function getSmartBaseForMainBranch(
+  workingDir?: string
+): Promise<string> {
   const isMergeCommit = await isHeadMergeCommit(workingDir);
   if (isMergeCommit) {
     // Merge commit: use first parent (main before merge)
@@ -231,23 +246,28 @@ export async function getSmartBaseForMainBranch(workingDir?: string): Promise<st
 
 // New context-driven reference resolution functions
 
-export function detectExecutionContext(context: GitContext): 'github-pr' | 'github-main' | 'manual' {
+export function detectExecutionContext(
+  context: GitContext
+): 'github-pr' | 'github-main' | 'manual' {
   const { env } = context;
-  
+
   // Check for GitHub PR context
   if (env.GITHUB_BASE_REF || env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA) {
     return 'github-pr';
   }
-  
+
   // Check for GitHub main branch push context
   if (env.GITHUB_ACTIONS && env.GITHUB_REF === 'refs/heads/main') {
     return 'github-main';
   }
-  
+
   return 'manual';
 }
 
-export async function selectReferences(contextType: string, context: GitContext): Promise<ReferenceSelection> {
+export async function selectReferences(
+  contextType: string,
+  context: GitContext
+): Promise<ReferenceSelection> {
   switch (contextType) {
     case 'github-pr':
       return selectGitHubPRRefs(context);
@@ -262,77 +282,87 @@ export async function selectReferences(contextType: string, context: GitContext)
 
 function selectGitHubPRRefs(context: GitContext): ReferenceSelection {
   const { env } = context;
-  
+
   if (env.GITHUB_BASE_REF) {
     return {
       base: `origin/${env.GITHUB_BASE_REF}`,
       head: 'HEAD',
-      strategy: 'github-pr-base-ref'
+      strategy: 'github-pr-base-ref',
     };
   }
-  
+
   if (env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA) {
     return {
       base: env.GITHUB_EVENT_PULL_REQUEST_BASE_SHA,
       head: 'HEAD',
-      strategy: 'github-pr-base-sha'
+      strategy: 'github-pr-base-sha',
     };
   }
-  
+
   throw new Error('GitHub PR context detected but no base reference found');
 }
 
-async function selectMainBranchRefs(context: GitContext): Promise<ReferenceSelection> {
+async function selectMainBranchRefs(
+  context: GitContext
+): Promise<ReferenceSelection> {
   const isMergeCommit = await isHeadMergeCommit(context.workingDir);
-  
+
   if (isMergeCommit) {
     return {
       base: 'HEAD^1',
       head: 'HEAD',
-      strategy: 'merge-commit'
+      strategy: 'merge-commit',
     };
   } else {
     return {
-      base: 'HEAD~1', 
+      base: 'HEAD~1',
       head: 'HEAD',
-      strategy: 'regular-commit'
+      strategy: 'regular-commit',
     };
   }
 }
 
 function selectManualRefs(context: GitContext): ReferenceSelection {
   const { options } = context;
-  
+
   return {
     base: options.base || DEFAULT_BASE_BRANCH,
     head: options.head || DEFAULT_HEAD_BRANCH,
-    strategy: 'manual'
+    strategy: 'manual',
   };
 }
 
-export async function validateReferences(selection: ReferenceSelection, workingDir: string): Promise<ReferenceSelection> {
+export async function validateReferences(
+  selection: ReferenceSelection,
+  workingDir: string
+): Promise<ReferenceSelection> {
   const git = createGit(workingDir);
-  
+
   try {
     // Validate base reference
     await git.raw(['rev-parse', '--verify', selection.base]);
     return selection; // All good
   } catch {
     // 80/20: Only handle the critical cases (shallow clone, initial commit)
-    if (selection.strategy === 'merge-commit' || selection.strategy === 'regular-commit') {
+    if (
+      selection.strategy === 'merge-commit' ||
+      selection.strategy === 'regular-commit'
+    ) {
       return {
         ...selection,
         base: EMPTY_TREE_HASH,
-        strategy: `${selection.strategy}-fallback`
+        strategy: `${selection.strategy}-fallback`,
       };
     }
-    
+
     // For other cases, re-throw the error with context
     throw new Error(`Base reference "${selection.base}" does not exist`);
   }
 }
 
-export async function resolveGitReferences(context: GitContext): Promise<ReferenceSelection> {
+export async function resolveGitReferences(
+  context: GitContext
+): Promise<ReferenceSelection> {
   const contextType = detectExecutionContext(context);
   const selection = await selectReferences(contextType, context);
   return await validateReferences(selection, context.workingDir);

@@ -21,12 +21,11 @@ export interface BaseConfig {
   metadata?: Record<string, unknown>;
 }
 
-
 export interface EvalConfig extends BaseConfig {
   files: string[];
   ignores?: string[];
   rules: Record<string, RuleConfig>;
-  
+
   // Helper methods would be added via implementation
 }
 
@@ -106,7 +105,7 @@ export enum GitFileStatus {
   MODIFIED = 'modified',
   DELETED = 'deleted',
   RENAMED = 'renamed',
-  COPIED = 'copied'
+  COPIED = 'copied',
 }
 
 /**

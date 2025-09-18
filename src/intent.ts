@@ -112,7 +112,7 @@ async function extractCommitIntent(
     const git = createGit(workingDir);
 
     let log;
-    
+
     // Handle special case: EMPTY_TREE_HASH cannot be used in git log ranges
     if (base === EMPTY_TREE_HASH) {
       // For first commit scenarios, just get the HEAD commit message

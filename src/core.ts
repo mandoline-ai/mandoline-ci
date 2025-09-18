@@ -59,7 +59,9 @@ async function filterFilesForConfig(
       absolute: false,
       onlyFiles: false,
     });
-    filteredPaths = includedPaths.filter((path) => !ignoredPaths.includes(path));
+    filteredPaths = includedPaths.filter(
+      (path) => !ignoredPaths.includes(path)
+    );
   }
 
   return files.filter((file) => filteredPaths.includes(file.path));
@@ -124,14 +126,8 @@ export async function validateSetupEnvironment(
 export async function prepareEvaluationContext(
   options: PrepareEvaluationContextOptions
 ): Promise<EvaluationPreparation> {
-  const {
-    base,
-    head,
-    manualIntent,
-    workingDirectory,
-    configPath,
-    log,
-  } = options;
+  const { base, head, manualIntent, workingDirectory, configPath, log } =
+    options;
 
   emitLog(log, `Validating git references: ${base}...${head}`);
   await validateGitRefs(base, head, workingDirectory);
@@ -320,15 +316,14 @@ export class MandolineCI {
 
     this.log(`Starting evaluation: ${base}...${head}`);
 
-    const { configs, intentSource, gitDiff } =
-      await prepareEvaluationContext({
-        base,
-        head,
-        manualIntent,
-        workingDirectory: this.workingDirectory,
-        configPath,
-        log,
-      });
+    const { configs, intentSource, gitDiff } = await prepareEvaluationContext({
+      base,
+      head,
+      manualIntent,
+      workingDirectory: this.workingDirectory,
+      configPath,
+      log,
+    });
 
     if (gitDiff.files.length === 0) {
       this.log('No files changed, skipping evaluation');

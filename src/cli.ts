@@ -2,9 +2,7 @@
 
 import { Command } from 'commander';
 
-import {
-  DEFAULT_THRESHOLD,
-} from './constants.js';
+import { DEFAULT_THRESHOLD } from './constants.js';
 import { MandolineCI } from './core.js';
 import { resolveGitReferences } from './git.js';
 import { getPackageVersion } from './utils.js';
@@ -99,9 +97,9 @@ program
       const gitContext = {
         env: process.env,
         options: { base: options.base, head: options.head },
-        workingDir: options.workingDirectory || process.cwd()
+        workingDir: options.workingDirectory || process.cwd(),
       };
-      
+
       const references = await resolveGitReferences(gitContext);
       const { base, head } = references;
 
