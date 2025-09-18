@@ -8,9 +8,7 @@ interface CliResults {
   hasFailures: boolean;
 }
 
-function groupByConfig(
-  results: EvalResult[]
-): Record<string, EvalResult[]> {
+function groupByConfig(results: EvalResult[]): Record<string, EvalResult[]> {
   return results.reduce<Record<string, EvalResult[]>>((acc, result) => {
     const key = result.configName;
     if (!acc[key]) {

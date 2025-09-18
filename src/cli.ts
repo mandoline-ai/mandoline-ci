@@ -3,10 +3,10 @@
 import { Command } from 'commander';
 
 import { MandolineCI } from './core.js';
-import { resolveGitReferences } from './git.js';
 import { formatCliResults } from './formatters/cliResults.js';
-import { getPackageVersion } from './utils.js';
+import { resolveGitReferences } from './git.js';
 import type { EvalResult } from './types.js';
+import { getPackageVersion } from './utils.js';
 
 function displayResults(results: EvalResult[]): void {
   const { lines, hasFailures } = formatCliResults(results);

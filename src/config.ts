@@ -5,12 +5,15 @@ import { access } from 'fs/promises';
 
 import { CONFIG_FILENAMES, DEFAULT_THRESHOLD } from './constants.js';
 import {
+  formatConfigErrors,
+  formatConfigWarnings,
+} from './formatters/configMessages.js';
+import { formatError } from './formatters/errors.js';
+import {
   ConfigDiscoveryOptions,
   EvalConfig,
   ValidationResult,
 } from './types.js';
-import { formatError } from './formatters/errors.js';
-import { formatConfigErrors, formatConfigWarnings } from './formatters/configMessages.js';
 import { isValidUUID } from './utils.js';
 
 export async function discoverConfig(
@@ -135,9 +138,7 @@ export function validateConfigs(configs: EvalConfig[]): ValidationResult {
     const result = validateConfig(config);
 
     // Add context to errors and warnings
-    allErrors.push(
-      ...formatConfigErrors(config.name, index, result.errors)
-    );
+    allErrors.push(...formatConfigErrors(config.name, index, result.errors));
     allWarnings.push(
       ...formatConfigWarnings(config.name, index, result.warnings)
     );
