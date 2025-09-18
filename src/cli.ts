@@ -2,73 +2,20 @@
 
 import { Command } from 'commander';
 
-import { DEFAULT_THRESHOLD } from './constants.js';
 import { MandolineCI } from './core.js';
+import { formatCliResults } from './formatters/cliResults.js';
 import { resolveGitReferences } from './git.js';
+import type { EvalResult } from './types.js';
 import { getPackageVersion } from './utils.js';
 
-function displayResults(results: any[]): void {
-  // Display results
-  console.log(`\n📊 Evaluation Results (${results.length} total):`);
-  console.log('─'.repeat(60));
+function displayResults(results: EvalResult[]): void {
+  const { lines, hasFailures } = formatCliResults(results);
 
-  const configGroups = groupBy(results, (r) => r.configName);
-  let overallPassed = true;
-
-  for (const [configName, configResults] of Object.entries(configGroups)) {
-    console.log(`\n🔧 Configuration: ${configName}`);
-
-    const configPassed = configResults.every((r) => r.success);
-    overallPassed = overallPassed && configPassed;
-
-    for (const result of configResults) {
-      const status = result.success ? '✅ PASS' : '❌ FAIL';
-      const score = result.evaluation.score.toFixed(3);
-      const threshold =
-        result.evaluation.properties?.threshold ?? DEFAULT_THRESHOLD;
-
-      console.log(
-        `  ${status} ${result.ruleId}: ${score} (threshold: ${threshold})`
-      );
-    }
+  for (const line of lines) {
+    console.log(line);
   }
 
-  console.log('\n' + '─'.repeat(60));
-
-  if (overallPassed) {
-    console.log('🎉 All evaluations passed!');
-    process.exit(0);
-  } else {
-    console.log('💥 Some evaluations failed.');
-
-    // Show summary of failures
-    const failures = results.filter((r) => !r.success);
-    console.log(`\n❌ Failed evaluations (${failures.length}):`);
-    for (const failure of failures) {
-      console.log(
-        `  - ${failure.configName}.${
-          failure.ruleId
-        }: ${failure.evaluation.score.toFixed(3)}`
-      );
-    }
-
-    process.exit(1);
-  }
-}
-
-function groupBy<T>(
-  array: T[],
-  keyFn: (item: T) => string
-): Record<string, T[]> {
-  return array.reduce(
-    (groups, item) => {
-      const key = keyFn(item);
-      groups[key] = groups[key] || [];
-      groups[key].push(item);
-      return groups;
-    },
-    {} as Record<string, T[]>
-  );
+  process.exit(hasFailures ? 1 : 0);
 }
 
 // CLI Setup & Program Definition

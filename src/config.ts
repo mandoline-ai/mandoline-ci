@@ -5,11 +5,16 @@ import { access } from 'fs/promises';
 
 import { CONFIG_FILENAMES, DEFAULT_THRESHOLD } from './constants.js';
 import {
+  formatConfigErrors,
+  formatConfigWarnings,
+} from './formatters/configMessages.js';
+import { formatError } from './formatters/errors.js';
+import {
   ConfigDiscoveryOptions,
   EvalConfig,
   ValidationResult,
 } from './types.js';
-import { formatError, isValidUUID } from './utils.js';
+import { isValidUUID } from './utils.js';
 
 export async function discoverConfig(
   options: ConfigDiscoveryOptions = {}
@@ -133,15 +138,9 @@ export function validateConfigs(configs: EvalConfig[]): ValidationResult {
     const result = validateConfig(config);
 
     // Add context to errors and warnings
-    result.errors.forEach((error) =>
-      allErrors.push(
-        `Config ${index + 1} (${config.name || 'unnamed'}): ${error}`
-      )
-    );
-    result.warnings.forEach((warning) =>
-      allWarnings.push(
-        `Config ${index + 1} (${config.name || 'unnamed'}): ${warning}`
-      )
+    allErrors.push(...formatConfigErrors(config.name, index, result.errors));
+    allWarnings.push(
+      ...formatConfigWarnings(config.name, index, result.warnings)
     );
 
     // Check for duplicate names
