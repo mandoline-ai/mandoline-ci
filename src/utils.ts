@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 import { SimpleGit, simpleGit } from 'simple-git';
@@ -38,8 +38,9 @@ export function safeJsonParse<T>(jsonString: string, fallback: T): T {
  */
 export function getPackageVersion(importMetaUrl: string): string {
   const packageJsonPath = join(
-    fileURLToPath(importMetaUrl),
-    '../../../package.json'
+    dirname(fileURLToPath(importMetaUrl)),
+    '..',
+    'package.json'
   );
   const content = safeReadFile(packageJsonPath);
   if (!content) return 'unknown';
