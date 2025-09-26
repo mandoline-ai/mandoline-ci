@@ -1,6 +1,6 @@
 # Mandoline CI
 
-Integrate custom code evals into CI pipelines using the [Mandoline API](http://mandoline.ai).
+Extend CI with Custom Code Evals using the [Mandoline API](http://mandoline.ai).
 
 ## Quick Start
 
