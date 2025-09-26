@@ -3,7 +3,11 @@ import { pathToFileURL } from 'url';
 
 import { access } from 'fs/promises';
 
-import { CONFIG_FILENAMES, DEFAULT_THRESHOLD } from './constants.js';
+import {
+  CONFIG_FILENAMES,
+  DEFAULT_SCORE_OBJECTIVE,
+  DEFAULT_THRESHOLD,
+} from './constants.js';
 import {
   formatConfigErrors,
   formatConfigWarnings,
@@ -12,6 +16,7 @@ import { formatError } from './formatters/errors.js';
 import {
   ConfigDiscoveryOptions,
   EvalConfig,
+  RuleConfig,
   ValidationResult,
 } from './types.js';
 import { isValidUUID } from './utils.js';
@@ -115,6 +120,16 @@ export function validateConfig(config: EvalConfig): ValidationResult {
       ) {
         errors.push(`Rule "${ruleId}" threshold must be between -1 and 1`);
       }
+
+      if (
+        rule.scoreObjective !== undefined &&
+        rule.scoreObjective !== 'maximize' &&
+        rule.scoreObjective !== 'minimize'
+      ) {
+        errors.push(
+          `Rule "${ruleId}" scoreObjective must be either "maximize" or "minimize"`
+        );
+      }
     }
 
     if (Object.keys(config.rules).length === 0) {
@@ -166,4 +181,14 @@ export function validateConfigs(configs: EvalConfig[]): ValidationResult {
 
 export function getDefaultThreshold(): number {
   return DEFAULT_THRESHOLD;
+}
+
+export function resolveRuleEvaluationSettings(rule: RuleConfig): {
+  threshold: number;
+  scoreObjective: 'maximize' | 'minimize';
+} {
+  return {
+    threshold: rule.threshold ?? getDefaultThreshold(),
+    scoreObjective: rule.scoreObjective ?? DEFAULT_SCORE_OBJECTIVE,
+  };
 }

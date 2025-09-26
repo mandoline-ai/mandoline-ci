@@ -23,11 +23,18 @@ export default [
         metricId: '4cb434d4-c012-48ac-9a40-19b92d73450e',
         threshold: 0.1,
       },
+      'error-regressions': {
+        metricId: 'c7efb63f-3b6d-4b32-9dc6-04bddc8ebabc',
+        threshold: 0.2,
+        scoreObjective: 'minimize', // lower score indicates fewer regressions
+      },
       // and so on...
     },
   },
 ];
 ```
+
+Omit `scoreObjective` to use the default `'maximize'` behavior (higher scores pass). Set it to `'minimize'` when Mandoline should treat lower scores as better.
 
 See this repo's [configuration](https://github.com/mandoline-ai/mandoline-ci/blob/main/mandoline-ci.config.mjs) for a complete example.
 
