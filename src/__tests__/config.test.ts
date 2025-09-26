@@ -48,6 +48,24 @@ describe('config validation', () => {
       );
     });
 
+    it('should fail for invalid scoreObjective', () => {
+      const config = {
+        ...validConfig,
+        rules: {
+          'test-rule': {
+            name: 'test-rule',
+            metricId: '12345678-1234-5678-9012-123456789012',
+            scoreObjective: 'optimize',
+          },
+        },
+      } as unknown as EvalConfig;
+      const result = validateConfig(config);
+      expect(result.success).toBe(false);
+      expect(result.errors).toContain(
+        'Rule "test-rule" scoreObjective must be either "maximize" or "minimize"'
+      );
+    });
+
     it('should fail for threshold outside range', () => {
       const config = {
         ...validConfig,

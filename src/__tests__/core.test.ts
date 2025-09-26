@@ -191,6 +191,70 @@ describe('core pipeline helpers', () => {
       expect(results[0].ruleId).toBe('quality');
     });
 
+    it('honors minimize score objective when evaluating success', async () => {
+      mockGlobby.mockResolvedValue(['src/index.ts']);
+
+      const minimizingConfig: EvalConfig = {
+        name: 'src',
+        files: ['src/**/*.ts'],
+        rules: {
+          regression: {
+            name: 'regression',
+            metricId: '12345678-1234-5678-9012-123456789012',
+            threshold: 0.2,
+            scoreObjective: 'minimize',
+          },
+        },
+      };
+
+      const clientImpl = {
+        createEvaluation: jest.fn(async (payload: unknown) => ({
+          score: 0.1,
+          properties: (payload as { properties?: Record<string, unknown> })
+            .properties,
+        })),
+      };
+
+      const mockClient = clientImpl as unknown as Mandoline;
+
+      const passResults = await executeEvaluations({
+        base,
+        configs: [minimizingConfig],
+        intentSource,
+        gitDiff,
+        workingDirectory,
+        client: mockClient,
+      });
+
+      expect(passResults[0].success).toBe(true);
+      expect(passResults[0].scoreObjective).toBe('minimize');
+      const firstCall = clientImpl.createEvaluation.mock.calls[0]?.[0] as {
+        properties?: Record<string, unknown>;
+      };
+      expect(firstCall?.properties).toEqual(
+        expect.objectContaining({ threshold: 0.2, scoreObjective: 'minimize' })
+      );
+
+      clientImpl.createEvaluation.mockReset().mockImplementation(
+        async (payload: unknown) => ({
+          score: 0.3,
+          properties: (payload as { properties?: Record<string, unknown> })
+            .properties,
+        })
+      );
+
+      const failResults = await executeEvaluations({
+        base,
+        configs: [minimizingConfig],
+        intentSource,
+        gitDiff,
+        workingDirectory,
+        client: mockClient,
+      });
+
+      expect(failResults[0].success).toBe(false);
+    });
+
     it('skips configs with no matching files', async () => {
       mockGlobby.mockResolvedValue([]);
 

@@ -33,6 +33,10 @@ export interface RuleConfig extends BaseConfig {
   metricId: UUID;
   threshold?: number; // default: DEFAULT_THRESHOLD
   weight?: number; // For future weighted scoring
+  /**
+   * Determines whether the metric should be maximized or minimized. Defaults to 'maximize'.
+   */
+  scoreObjective?: 'maximize' | 'minimize';
 }
 
 export interface EvaluateDiffOptions {
@@ -51,6 +55,7 @@ export interface EvalResult extends BaseResult {
   configName: string;
   score?: number;
   threshold?: number;
+  scoreObjective?: 'maximize' | 'minimize';
 }
 
 export type LogFunction = (message: string) => void;

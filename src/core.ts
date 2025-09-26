@@ -3,7 +3,7 @@ import { Mandoline } from 'mandoline';
 
 import {
   discoverConfig,
-  getDefaultThreshold,
+  resolveRuleEvaluationSettings,
   validateConfigs,
 } from './config.js';
 import { getEnvironmentContext } from './context.js';
@@ -211,7 +211,8 @@ export async function executeEvaluations(
     );
 
     for (const [ruleId, rule] of Object.entries(config.rules)) {
-      const threshold = rule.threshold ?? getDefaultThreshold();
+      const { threshold, scoreObjective } =
+        resolveRuleEvaluationSettings(rule);
 
       const prompt = formatPrompt(intentSource.content, filteredFiles);
       const response = formatResponse(filteredFiles);
@@ -222,6 +223,7 @@ export async function executeEvaluations(
         response,
         properties: {
           threshold,
+          scoreObjective,
           config: config.name,
           base_ref: base,
           head_ref: gitDiff.head,
@@ -231,7 +233,10 @@ export async function executeEvaluations(
         },
       });
 
-      const success = evaluation.score >= threshold;
+      const success =
+        scoreObjective === 'maximize'
+          ? evaluation.score >= threshold
+          : evaluation.score <= threshold;
 
       results.push({
         evaluation,
@@ -240,6 +245,7 @@ export async function executeEvaluations(
         configName: config.name,
         score: evaluation.score,
         threshold,
+        scoreObjective,
       });
     }
   }

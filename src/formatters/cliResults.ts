@@ -1,4 +1,4 @@
-import { DEFAULT_THRESHOLD } from '../constants.js';
+import { DEFAULT_SCORE_OBJECTIVE, DEFAULT_THRESHOLD } from '../constants.js';
 import type { EvalResult } from '../types.js';
 
 const SEPARATOR = '─'.repeat(60);
@@ -38,11 +38,20 @@ export function formatCliResults(results: EvalResult[]): CliResults {
     for (const result of configResults) {
       const status = result.success ? '✅ PASS' : '❌ FAIL';
       const score = result.evaluation.score.toFixed(3);
+      const thresholdValue =
+        result.threshold ?? result.evaluation.properties?.threshold;
       const threshold =
-        result.evaluation.properties?.threshold ?? DEFAULT_THRESHOLD;
+        typeof thresholdValue === 'number'
+          ? thresholdValue.toFixed(3)
+          : DEFAULT_THRESHOLD.toFixed(3);
+      const objective =
+        result.scoreObjective ??
+        result.evaluation.properties?.scoreObjective ??
+        DEFAULT_SCORE_OBJECTIVE;
+      const comparator = objective === 'minimize' ? '<=' : '>=';
 
       lines.push(
-        `  ${status} ${result.ruleId}: ${score} (threshold: ${threshold})`
+        `  ${status} ${result.ruleId}: score ${score} ${comparator} threshold ${threshold} (${objective})`
       );
     }
   }
