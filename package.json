@@ -1,7 +1,7 @@
 {
   "name": "mandoline-ci",
   "version": "0.2.3",
-  "description": "Integrate custom code evals into CI pipelines using the Mandoline API.",
+  "description": "Extend CI with Custom Code Evals",
   "type": "module",
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",

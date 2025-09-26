@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 
+import { CLI_TAGLINE } from './constants.js';
 import { MandolineCI } from './core.js';
 import { formatCliResults } from './formatters/cliResults.js';
 import { resolveGitReferences } from './git.js';
@@ -24,9 +25,7 @@ const program = new Command();
 
 program
   .name('mandoline-ci')
-  .description(
-    'Code evaluation tool that extends CI pipelines to assess intent and quality expectations'
-  )
+  .description(CLI_TAGLINE)
   .version(getPackageVersion(import.meta.url));
 
 program
